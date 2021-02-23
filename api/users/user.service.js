@@ -21,7 +21,7 @@ module.exports = {
       }
     );
   },
-  gerUsers:callBack =>{
+  getUsers:callBack =>{
     pool.query(
       `SELECT id,firstName,lastName,gender,email,number FROM registration`,
       [],
