@@ -21,33 +21,31 @@ module.exports = {
       }
     );
   },
-  getUsers:callBack =>{
+  getUsers: (callBack) => {
     pool.query(
       `SELECT id,firstName,lastName,gender,email,number FROM registration`,
       [],
-      (error, results, fields)=>{
-        if(error){
+      (error, results, fields) => {
+        if (error) {
           return callBack(error);
         }
-        return callBack(null, results)
+        return callBack(null, results);
       }
     );
   },
-  getUserByUserId:(id, callBack)=>{
+  getUserByUserId: (id, callBack) => {
     pool.query(
       `SELECT id,firstName,lastName,gender,email,number FROM registration WHERE id = ?`,
-      [
-        id
-      ],
-      (error,results,fields)=>{
-        if(error){
+      [id],
+      (error, results, fields) => {
+        if (error) {
           return callBack(error);
         }
         return callBack(null, results[0]);
       }
     );
   },
-  updateUser:(data, callBack)=>{
+  updateUser: (data, callBack) => {
     pool.query(
       `UPDATE registration SET firstName=?,lastName=?,gender=?,email=?,password=?,number=? WHERE id=?`,
       [
@@ -57,21 +55,32 @@ module.exports = {
         data.email,
         data.password,
         data.number,
-        data.id
+        data.id,
       ],
-      (error, results, fields)=>{
-        if(error){
+      (error, results, fields) => {
+        if (error) {
           return callBack(error);
         }
         return callBack(null, results[0]);
       }
-
     );
   },
-  deleteUser:(id, callBack)=>{
+  deleteUser: (data, callBack) => {
     pool.query(
       `DELETE FROM registration WHERE id=?`,
-      [id],
+      [data.id],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results[0]);
+      }
+    );
+  },
+  getUserByUserEmail: (email, callBack) => {
+    pool.query(
+      `SELECT * FROM registration WHERE email=?`,
+      [email],
       (error, results, fields)=>{
         if(error){
           return callBack(error);
@@ -79,5 +88,5 @@ module.exports = {
         return callBack(null, results[0]);
       }
     );
-  }
+  },
 };

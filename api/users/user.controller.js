@@ -4,8 +4,10 @@ const {
   updateUser,
   getUsers,
   deleteUser,
+  getUserByUserEmail,
 } = require("./user.service");
-const { hashSync, genSaltSync } = require("bcrypt");
+const { hashSync, genSaltSync, compareSync } = require("bcrypt");
+const { sign } = require("jsonwebtoken");
 
 module.exports = {
   createUser: (req, res) => {
@@ -28,72 +30,104 @@ module.exports = {
   getUserByUserId: (req, res) => {
     const id = req.params.id;
     getUserByUserId(id, (err, results) => {
-      if(err){
+      if (err) {
         console.log(err);
         return;
       }
-      if(!results){
+      if (!results) {
         return res.json({
           success: 0,
-          message: "Record not found"
+          message: "Record not found",
         });
       }
       return res.json({
         success: 1,
-        data: results
+        data: results,
       });
     });
   },
-  getUsers:(req, res)=>{
-    getUsers((err, results)=>{
-      if(err){
+  getUsers: (req, res) => {
+    getUsers((err, results) => {
+      if (err) {
         console.log(err);
         return;
       }
       return res.json({
-        success:1,
-        data: results
+        success: 1,
+        data: results,
       });
     });
   },
-  updateUsers:(req, res)=>{
+  updateUsers: (req, res) => {
     const body = req.body;
     const salt = genSaltSync(10);
     body.password = hashSync(body.password, salt);
-    updateUser(body, (err, results)=>{
-      if(err){
+    updateUser(body, (err, results) => {
+      if (err) {
         console.log(err);
         return;
       }
-      if(!results){
+      if (!results) {
         return res.json({
           success: 0,
-          message: "Record not updated"
+          message: "Record not updated",
         });
       }
       return res.json({
         success: 1,
-        message: "Updated successfuly"
+        message: "Updated successfuly",
       });
     });
   },
-  deleteUser:(req, res)=>{
-    const id = req.params.id;
-    deleteUser(id, (err, results)=>{
-      if(err){
+  deleteUser: (req, res) => {
+    const body = req.body;
+    deleteUser(body, (err, results) => {
+      if (err) {
         console.log(err);
         return;
       }
-      if(!results){
+      if (!results) {
         return res.json({
           success: 0,
-          message: "Record not found"
+          message: "Record not found",
         });
       }
       return res.json({
         success: 1,
-        message: "User deleted successfuly"
+        message: "User deleted successfuly",
       });
     });
-  }
+  },
+  login: (req, res) => {
+    const body = req.body;
+    getUserByUserEmail(body.email, (err, results) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      if (!results) {
+        return res.json({
+          success: 0,
+          message: "Invalid email or password",
+        });
+      }
+      const result = compareSync(body.password, results.password);
+      if (result) {
+        results.password = undefined;
+        const jsonToken = sign({ result: results }, "qwe1234", {
+          expiresIn: "1h",
+        });
+        return res.json({
+          success: 1,
+          message: "Login successfuly",
+          token: jsonToken,
+        });
+      } else {
+        return res.json({
+          success: 0,
+          message: "Invalid email or Password",
+        });
+      }
+    });
+  },
 };
