@@ -56,6 +56,7 @@ module.exports = {
         data.gender,
         data.email,
         data.password,
+        data.number,
         data.id
       ],
       (error, results, fields)=>{
