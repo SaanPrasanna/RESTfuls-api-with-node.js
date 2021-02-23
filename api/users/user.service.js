@@ -33,7 +33,7 @@ module.exports = {
       }
     );
   },
-  getUserbyUserId:(id, callBack)=>{
+  getUserByUserId:(id, callBack)=>{
     pool.query(
       `SELECT id,firstName,lastName,gender,email,number FROM registration WHERE id = ?`,
       [
@@ -45,6 +45,26 @@ module.exports = {
         }
         return callBack(null, results[0]);
       }
+    );
+  },
+  updateUser:(data, callBack)=>{
+    pool.query(
+      `UPDATE registration SET firstName=?,lastName=?,gender=?,email=?,password=?,number=? WHERE id=?`,
+      [
+        data.first_name,
+        data.last_name,
+        data.gender,
+        data.email,
+        data.password,
+        data.id
+      ],
+      (error, results, fields)=>{
+        if(error){
+          return callBack(error);
+        }
+        return callBack(null, results[0]);
+      }
+
     );
   }
 };
