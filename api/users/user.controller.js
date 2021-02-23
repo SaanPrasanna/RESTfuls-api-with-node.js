@@ -65,6 +65,12 @@ module.exports = {
         console.log(err);
         return;
       }
+      if(!results){
+        return res.json({
+          success: 0,
+          message: "Record not updated"
+        });
+      }
       return res.json({
         success: 1,
         message: "Updated successfuly"
