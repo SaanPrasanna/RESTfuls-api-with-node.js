@@ -1,11 +1,11 @@
 const { createPool } = require("mysql");
 
 const pool = createPool({
-    port:process.env.DB_PORT,
-    host:process.env.DB_HOST,
-    user:process.env.DB_USER,
-    password:process.env.DB_PASS,
-    database:process.env.MYSQL_DB,
+    port:3306,
+    host:"fdb28.awardspace.net",
+    user:"3548551_crud",
+    password:"saanpmapa#1996",
+    database:"3548551_crud",
     connectionLimit:10
 });
 
